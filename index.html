@@ -1,9 +1,89 @@
-<html>
-<head> ULIT</head>
-<body> <h1>kimm pOgi</h1>
-  <p>This is my country!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vivlia Library System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <!-- LOGO SECTION -->
+      <div class="logo">
+        <img src="logo.jpeg" alt="Vivlia Logo" class="logo-img">
+      </div>
 
+      <nav>
+        <ul>
+          <li><button class="nav-btn active" data-page="home">🏠 Home</button></li>
+          <li><button class="nav-btn" data-page="borrow">📖 Borrow</button></li>
+          <li><button class="nav-btn" data-page="return">↩️ Return</button></li>
+          <li><button class="nav-btn" data-page="completed">✅ Completed</button></li>
+        </ul>
+      </nav>
+    </aside>
 
+    <!-- MAIN CONTENT -->
+    <main class="content">
+      <!-- HOME PAGE -->
+      <section id="home" class="page active">
+        <h1>Welcome to Vivlia!</h1>
+        <p>A library management website. Handling student needs and helping librarian wants.</p>
+      </section>
+
+      <!-- BORROW PAGE -->
+      <section id="borrow" class="page">
+        <h2>Borrow a Book</h2>
+        <form id="borrowForm">
+          <div class="form-group">
+            <label>Book Name:</label>
+            <input type="text" id="bookName" required>
+          </div>
+          <div class="form-group">
+            <label>Student ID:</label>
+            <input type="text" id="studentId" required>
+          </div>
+          <div class="form-group">
+            <label>Student Name:</label>
+            <input type="text" id="studentName" required>
+          </div>
+          <div class="form-group">
+            <label>Grade & Section:</label>
+            <input type="text" id="gradeSection" required>
+          </div>
+          <div class="form-group">
+            <label>Date Borrowed:</label>
+            <input type="date" id="dateBorrowed" required>
+          </div>
+          <div class="form-group">
+            <label>Due Date:</label>
+            <input type="date" id="dueDate" required>
+          </div>
+
+          <div class="buttons">
+            <button type="submit" class="add-btn">Add</button>
+            <button type="reset" class="clear-btn">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- RETURN PAGE -->
+      <section id="return" class="page">
+        <h2>Return Books</h2>
+        <ul id="borrowList"></ul>
+      </section>
+
+      <!-- COMPLETED PAGE -->
+      <section id="completed" class="page">
+        <h2>Completed Transactions</h2>
+        <ul id="completedList"></ul>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
 </body>
-
 </html>
+
