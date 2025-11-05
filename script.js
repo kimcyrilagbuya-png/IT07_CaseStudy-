@@ -47,6 +47,8 @@ function displayBorrowed() {
       <strong>${b.bookName}</strong> - ${b.studentName} (${b.studentId}) 
       <br>Due: ${b.dueDate}
       <button onclick="markReturned(${index})">Return</button>
+      <button onclick="editRecord(${index})">Edit</button>
+      <button onclick="deleteRecord(${index})">Delete</button>
     `;
     list.appendChild(li);
   });
@@ -64,18 +66,67 @@ function markReturned(index) {
   displayCompleted();
 }
 
+// ===== EDIT FUNCTION =====
+function editRecord(index) {
+  const record = borrowData[index];
+
+  // Prompt the user for new values (keeps old ones if left blank)
+  const newBookName = prompt("Edit Book Name:", record.bookName) || record.bookName;
+  const newStudentId = prompt("Edit Student ID:", record.studentId) || record.studentId;
+  const newStudentName = prompt("Edit Student Name:", record.studentName) || record.studentName;
+  const newGradeSection = prompt("Edit Grade & Section:", record.gradeSection) || record.gradeSection;
+  const newDateBorrowed = prompt("Edit Date Borrowed:", record.dateBorrowed) || record.dateBorrowed;
+  const newDueDate = prompt("Edit Due Date:", record.dueDate) || record.dueDate;
+
+  // Update the record
+  borrowData[index] = {
+    bookName: newBookName,
+    studentId: newStudentId,
+    studentName: newStudentName,
+    gradeSection: newGradeSection,
+    dateBorrowed: newDateBorrowed,
+    dueDate: newDueDate
+  };
+
+  localStorage.setItem('borrowData', JSON.stringify(borrowData));
+  displayBorrowed();
+  alert("Record updated successfully!");
+}
+
+// ===== DELETE FUNCTION =====
+function deleteRecord(index) {
+  if (confirm("Are you sure you want to delete this record?")) {
+    borrowData.splice(index, 1);
+    localStorage.setItem('borrowData', JSON.stringify(borrowData));
+    displayBorrowed();
+    alert("Record deleted successfully!");
+  }
+}
+
 // ===== DISPLAY COMPLETED =====
 function displayCompleted() {
   const list = document.getElementById('completedList');
   list.innerHTML = '';
-  completedData.forEach(b => {
+  completedData.forEach((b, index) => {
     const li = document.createElement('li');
     li.innerHTML = `
       ✅ <strong>${b.bookName}</strong> - Returned by ${b.studentName}
+      <button onclick="deleteCompleted(${index})">Delete</button>
     `;
     list.appendChild(li);
   });
 }
+
+// ===== DELETE COMPLETED FUNCTION =====
+function deleteCompleted(index) {
+  if (confirm("Are you sure you want to delete this record?")) {
+    completedData.splice(index, 1);
+    localStorage.setItem('completedData', JSON.stringify(completedData));
+    displayCompleted();
+  }
+}
+
+
 
 // ===== INITIAL DISPLAY =====
 displayBorrowed();
