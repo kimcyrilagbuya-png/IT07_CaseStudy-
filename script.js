@@ -78,7 +78,7 @@ function editRecord(index) {
   const newDateBorrowed = prompt("Edit Date Borrowed:", record.dateBorrowed) || record.dateBorrowed;
   const newDueDate = prompt("Edit Due Date:", record.dueDate) || record.dueDate;
 
-  // Update the record
+  // UPDATE THE RECORD
   borrowData[index] = {
     bookName: newBookName,
     studentId: newStudentId,
@@ -125,6 +125,29 @@ function deleteCompleted(index) {
     displayCompleted();
   }
 }
+
+// ===== SEARCH BAR =====
+function filterBooks() {
+  const input = document.getElementById('searchInput').value.toLowerCase();
+  const items = document.querySelectorAll('#borrowList li');
+
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(input) ? '' : 'none';
+  });
+}
+
+function filterCompletedBooks() {
+  const input = document.getElementById('completedSearchInput').value.toLowerCase();
+  const items = document.querySelectorAll('#completedList li');
+
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(input) ? '' : 'none';
+  });
+}
+
+
 
 
 
