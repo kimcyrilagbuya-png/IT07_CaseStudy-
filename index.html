@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- VIDEO CLIP -->
+    
+
+
   <div class="container">
     <!-- SIDEBAR -->
     <aside class="sidebar">
@@ -27,10 +31,21 @@
 
     <!-- MAIN CONTENT -->
     <main class="content">
+
       <!-- HOME PAGE -->
       <section id="home" class="page active">
         <h1>Welcome to Vivlia!</h1>
-        <p>A library management website. Handling student needs and helping librarian wants.</p>
+        <h3 id="description">A PCCian library management website. It provides an organized platform for students 
+            and Admins to manage book inventories, 
+            monitor transactions, and access records efficiently.</h3>
+        <br>
+        <hr>
+        <br>
+        <br>
+        <video controls width="600">
+  <source src="library.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
       </section>
 
       <!-- BORROW PAGE -->
@@ -70,16 +85,43 @@
       </section>
 
       <!-- RETURN PAGE --> 
-      <section id="return" class="page">
-        <h2>Return Books</h2>
-        <ul id="borrowList"></ul>
-      </section>
+<section id="return" class="page">
+  <div class="return-header">
+    <h2>Return Books</h2>
+    <div class="search-container">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search books..." 
+        onkeyup="filterBooks()"
+      >
+      <button onclick="filterBooks()">🔍</button>
+    </div>
+  </div>
 
+  <ul id="borrowList"></ul>
+</section>
+
+ 
       <!-- COMPLETED PAGE -->
-      <section id="completed" class="page">
-        <h2>Completed Transactions</h2>
-        <ul id="completedList"></ul>
-      </section>
+<section id="completed" class="page">
+  <div class="completed-header">
+    <h2>Completed Transactions</h2>
+    <div class="search-container">
+      <input 
+        type="text" 
+        id="completedSearchInput" 
+        placeholder="Search completed transactions..." 
+        onkeyup="filterCompletedBooks()"
+      >
+      <button onclick="filterCompletedBooks()">🔍</button>
+    </div>
+  </div>
+
+  <ul id="completedList"></ul>
+</section>
+
+
     </main>
   </div>
 
