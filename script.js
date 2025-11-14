@@ -1,134 +1,161 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vivlia Library System</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- VIDEO CLIP -->
-    
+// ===== PAGE SWITCHING =====
+const navButtons = document.querySelectorAll('.nav-btn');
+const pages = document.querySelectorAll('.page');
+
+navButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    navButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    pages.forEach(page => page.classList.remove('active'));
+    document.getElementById(btn.dataset.page).classList.add('active');
+  });
+});
+
+// ===== JSON DATABASE (LOCAL STORAGE) =====
+let borrowData = JSON.parse(localStorage.getItem('borrowData')) || [];
+let completedData = JSON.parse(localStorage.getItem('completedData')) || [];
+
+// ===== ADD BORROW FORM =====
+document.getElementById('borrowForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const newBorrow = {
+    bookName: document.getElementById('bookName').value,
+    studentId: document.getElementById('studentId').value,
+    studentName: document.getElementById('studentName').value,
+    gradeSection: document.getElementById('gradeSection').value,
+    dateBorrowed: document.getElementById('dateBorrowed').value,
+    dueDate: document.getElementById('dueDate').value,
+    studentEmail: document.getElementById('studentEmail').value
+  };
+
+  borrowData.push(newBorrow);
+  localStorage.setItem('borrowData', JSON.stringify(borrowData));
+
+  alert("Book added successfully!");
+  document.getElementById('borrowForm').reset();
+  displayBorrowed();
+});
+
+// ===== DISPLAY BORROWED =====
+function displayBorrowed() {
+  const list = document.getElementById('borrowList');
+  list.innerHTML = '';
+  borrowData.forEach((b, index) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <strong>${b.bookName}</strong> - ${b.studentName} (${b.studentId})
+      <br>Email: ${b.studentEmail} 
+      <br>Due: ${b.dueDate}
+      <button onclick="markReturned(${index})">Return</button>
+      <button onclick="editRecord(${index})">Edit</button>
+      <button onclick="deleteRecord(${index})">Delete</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// ===== RETURN FUNCTION =====
+function markReturned(index) {
+  const returnedBook = borrowData.splice(index, 1)[0];
+  completedData.push(returnedBook);
+
+  localStorage.setItem('borrowData', JSON.stringify(borrowData));
+  localStorage.setItem('completedData', JSON.stringify(completedData));
+
+  displayBorrowed();
+  displayCompleted();
+}
+
+// ===== EDIT FUNCTION =====
+function editRecord(index) {
+  const record = borrowData[index];
+
+  // Prompt the user for new values (keeps old ones if left blank)
+  const newBookName = prompt("Edit Book Name:", record.bookName) || record.bookName;
+  const newStudentId = prompt("Edit Student ID:", record.studentId) || record.studentId;
+  const newStudentName = prompt("Edit Student Name:", record.studentName) || record.studentName;
+  const newGradeSection = prompt("Edit Grade & Section:", record.gradeSection) || record.gradeSection;
+  const newDateBorrowed = prompt("Edit Date Borrowed:", record.dateBorrowed) || record.dateBorrowed;
+  const newDueDate = prompt("Edit Due Date:", record.dueDate) || record.dueDate;
+  const newStudentEmail = prompt("Edit Due Email:", record.studentEmail) || record.studentEmail;
+
+  // UPDATE THE RECORD
+  borrowData[index] = {
+    bookName: newBookName,
+    studentId: newStudentId,
+    studentName: newStudentName,
+    gradeSection: newGradeSection,
+    dateBorrowed: newDateBorrowed,
+    dueDate: newDueDate,
+    studentEmail: newStudentEmail
+  };
+
+  localStorage.setItem('borrowData', JSON.stringify(borrowData));
+  displayBorrowed();
+  alert("Record updated successfully!");
+}
+
+// ===== DELETE FUNCTION =====
+function deleteRecord(index) {
+  if (confirm("Are you sure you want to delete this record?")) {
+    borrowData.splice(index, 1);
+    localStorage.setItem('borrowData', JSON.stringify(borrowData));
+    displayBorrowed();
+    alert("Record deleted successfully!");
+  }
+}
+
+// ===== DISPLAY COMPLETED =====
+function displayCompleted() {
+  const list = document.getElementById('completedList');
+  list.innerHTML = '';
+  completedData.forEach((b, index) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      ✅ <strong>${b.bookName}</strong> - Returned by ${b.studentName}<br>
+      Email: ${b.studentEmail}
+      <button onclick="deleteCompleted(${index})">Delete</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// ===== DELETE COMPLETED FUNCTION =====
+function deleteCompleted(index) {
+  if (confirm("Are you sure you want to delete this record?")) {
+    completedData.splice(index, 1);
+    localStorage.setItem('completedData', JSON.stringify(completedData));
+    displayCompleted();
+  }
+}
+
+// ===== SEARCH BAR =====
+function filterBooks() {
+  const input = document.getElementById('searchInput').value.toLowerCase();
+  const items = document.querySelectorAll('#borrowList li');
+
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(input) ? '' : 'none';
+  });
+}
+
+function filterCompletedBooks() {
+  const input = document.getElementById('completedSearchInput').value.toLowerCase();
+  const items = document.querySelectorAll('#completedList li');
+
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(input) ? '' : 'none';
+  });
+}
 
 
-  <div class="container">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <!-- LOGO SECTION -->
-      <div class="logo">
-        <img src="logo.jpeg" alt="Vivlia Logo" class="logo-img">
-      </div>
-
-      <nav>
-        <ul>
-          <li><button class="nav-btn active" data-page="home">🏠 Home</button></li>
-          <li><button class="nav-btn" data-page="borrow">📖 Borrow</button></li>
-          <li><button class="nav-btn" data-page="return">↩️ Return</button></li>
-          <li><button class="nav-btn" data-page="completed">✅ Completed</button></li>
-        </ul>
-      </nav>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="content">
-
-      <!-- HOME PAGE -->
-      <section id="home" class="page active">
-        <h1>Welcome to Vivlia!</h1>
-        <h3 id="description">A PCCian library management website. It provides an organized platform for students 
-            and Admins to manage book inventories, 
-            monitor transactions, and access records efficiently.</h3>
-        <br>
-        <hr>
-        <br>
-        <br>
-        <video controls width="600">
-  <source src="library.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-      </section>
-
-      <!-- BORROW PAGE -->
-      <section id="borrow" class="page">
-        <h2>Borrow a Book</h2>
-        <form id="borrowForm">
-          <div class="form-group">
-            <label>Book Name:</label>
-            <input type="text" id="bookName" required>
-          </div>
-          <div class="form-group">
-            <label>Student ID:</label>
-            <input type="text" id="studentId" required>
-          </div>
-          <div class="form-group">
-            <label>Student Name:</label>
-            <input type="text" id="studentName" required>
-          </div>
-          <div class="form-group">
-            <label>Grade & Section:</label>
-            <input type="text" id="gradeSection" required>
-          </div>
-          <div class="form-group">
-            <label>Date Borrowed:</label>
-            <input type="date" id="dateBorrowed" required>
-          </div>
-          <div class="form-group">
-            <label>Due Date:</label>
-            <input type="date" id="dueDate" required>
-          </div>
-          <div class="form-group">
-            <label>Email:</label>
-            <input type="text" id="studentEmail" required>
-          </div>
-
-          <div class="buttons">
-            <button type="submit" class="add-btn">Add</button>
-            <button type="reset" class="clear-btn">Clear</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- RETURN PAGE --> 
-<section id="return" class="page">
-  <div class="return-header">
-    <h2>Return Books</h2>
-    <div class="search-container">
-      <input 
-        type="text" 
-        id="searchInput" 
-        placeholder="Search books..." 
-        onkeyup="filterBooks()"
-      >
-      <button onclick="filterBooks()">🔍</button>
-    </div>
-  </div>
-
-  <ul id="borrowList"></ul>
-</section>
-
- 
-      <!-- COMPLETED PAGE -->
-<section id="completed" class="page">
-  <div class="completed-header">
-    <h2>Completed Transactions</h2>
-    <div class="search-container">
-      <input 
-        type="text" 
-        id="completedSearchInput" 
-        placeholder="Search completed transactions..." 
-        onkeyup="filterCompletedBooks()"
-      >
-      <button onclick="filterCompletedBooks()">🔍</button>
-    </div>
-  </div>
-
-  <ul id="completedList"></ul>
-</section>
 
 
-    </main>
-  </div>
 
-  <script src="script.js"></script>
-</body>
-</html>
+// ===== INITIAL DISPLAY =====
+displayBorrowed();
+displayCompleted();
